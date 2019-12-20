@@ -1,28 +1,27 @@
-use crate::activation_functions::*;
+use perceptron::activation_functions::*;
+use std::vec::Vec;
 
-pub enum Activation_names{
+pub enum ActivationNames{
     Sigmoid,
-    Hyperboloid,
-    Tangent,
-    Rectified_linear_unit,
+    HyperboloidTangent,
+    RectifiedLinearUnit,
 }
 
 pub struct Perceptron {
     bias: f64,
     weights: Vec<f64>,
-    activation: fn(f64)->f64,
+    activation: fn(&f64)->f64,
 }
 
 impl Perceptron {
-    pub fn new(inputs_number: usize, activation: Activation_names) -> Perceptron {
+    pub fn new(inputs_number: usize, activation: ActivationNames) -> Perceptron {
         Perceptron {
             bias: 1.0,
             weights: vec![0.0; usize],
             activation: match activation {
-                Activation_names::Sigmoid => sigmoid,
-                Activation_names::Hyperboloid => hyperboloid,
-                Activation_names::Tangent => tangent,
-                Activation_names::Rectified_linear_unit => rectified_linear_unit,
+                ActivationNames::Sigmoid => sigmoid,
+                ActivationNames::HyperboloidTangent => tanh,
+                ActivationNames::RectifiedLinearUnit => relu,
             }
         }
     }
