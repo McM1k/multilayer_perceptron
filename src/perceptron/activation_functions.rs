@@ -9,11 +9,11 @@ pub fn tanh(z: &f64) -> f64 {
 }
 
 pub fn relu(z: &f64) -> f64 {
-    if z <= 0 {
+    if *z <= 0.0 {
         0.0
     }
     else {
-        z
+        *z
     }
 }
 

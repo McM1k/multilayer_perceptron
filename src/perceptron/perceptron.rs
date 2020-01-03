@@ -1,4 +1,4 @@
-use perceptron::activation_functions::*;
+use super::activation_functions::*;
 use std::vec::Vec;
 
 pub enum ActivationNames{
@@ -17,7 +17,7 @@ impl Perceptron {
     pub fn new(inputs_number: usize, activation: ActivationNames) -> Perceptron {
         Perceptron {
             bias: 1.0,
-            weights: vec![0.0; usize],
+            weights: vec![0.0; inputs_number],
             activation: match activation {
                 ActivationNames::Sigmoid => sigmoid,
                 ActivationNames::HyperboloidTangent => tanh,
@@ -38,6 +38,6 @@ impl Perceptron {
 
     pub fn compute(&self, inputs: &Vec<f64>) -> f64 {
         let sum = self.weighted_sum(inputs);
-        self.activation(sum)
+        (self.activation)(&sum)
     }
 }
