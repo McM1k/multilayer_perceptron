@@ -9,3 +9,5 @@ edition = "2018"
 [dependencies]
 csv = "1.1.1"
 serde = { version = "1.0.104", features = ["derive"] }
+rand = { version = "0.7.2", features = ["small_rng"] }
+rand_core = "0.5.1"
