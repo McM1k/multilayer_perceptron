@@ -6,5 +6,5 @@ pub fn cross_entropy(y: Vec<_>, p: Vec<_>) -> f64 {
         sum += y[i] * p[i].log10() + (1 - y[i]) * (1 - p[i]).log10();
     }
 
-    -sum / n
+    -sum / n as f64
 }
