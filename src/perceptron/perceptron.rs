@@ -1,32 +1,32 @@
 use super::activation_functions::*;
 use std::vec::Vec;
+use rand::rngs::SmallRng;
 
-pub enum ActivationNames{
-    Sigmoid,
-    HyperboloidTangent,
-    RectifiedLinearUnit,
-}
+
 
 pub struct Perceptron {
     bias: f64,
     weights: Vec<f64>,
-    activation: fn(&f64)->f64,
 }
 
 impl Perceptron {
-    pub fn new(inputs_number: usize, activation: ActivationNames) -> Perceptron {
-        Perceptron {
-            bias: 1.0,
-            weights: vec![0.0; inputs_number],
-            activation: match activation {
-                ActivationNames::Sigmoid => sigmoid,
-                ActivationNames::HyperboloidTangent => tanh,
-                ActivationNames::RectifiedLinearUnit => relu,
-            }
+    pub fn new(inputs_number: usize, rng: &SmallRng) -> Perceptron {
+        let mut weights = Vec::new();
+
+        for i in 0..inputs_number {
+            weights.push(rng.gen_range(-1.0, 1.0));
         }
+
+
+        let mut perceptron = Perceptron {
+            bias: 1.0,
+            weights,
+        };
+
+        perceptron
     }
 
-    fn weighted_sum(&self, inputs: &Vec<f64>) -> f64 {
+    fn weighted_sum(&self, inputs: &[f64]) -> f64 {
         let mut sum = self.bias;
 
         for i in 0..self.weights.len() {
@@ -36,8 +36,8 @@ impl Perceptron {
         sum
     }
 
-    pub fn compute(&self, inputs: &Vec<f64>) -> f64 {
+    pub fn compute(&self, inputs: &[f64], activation: &ActivationNames) -> f64 {
         let sum = self.weighted_sum(inputs);
-        (self.activation)(&sum)
+        (activation.get_fn())(&sum)
     }
 }

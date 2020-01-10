@@ -1,5 +1,21 @@
 use std::vec::Vec;
 
+pub enum ActivationNames{
+    Sigmoid,
+    HyperboloidTangent,
+    RectifiedLinearUnit,
+}
+
+impl ActivationNames {
+    pub fn get_fn(&self) -> fn(&f64)->f64 {
+        match *activation {
+            ActivationNames::Sigmoid => sigmoid,
+            ActivationNames::HyperboloidTangent => tanh,
+            ActivationNames::RectifiedLinearUnit => relu,
+        }
+    }
+}
+
 pub fn sigmoid(z: &f64) -> f64 {
     1.0 / (1.0 + (-z).exp())
 }
@@ -17,14 +33,20 @@ pub fn relu(z: &f64) -> f64 {
     }
 }
 
-pub fn softmax(x: &Vec<f64>, i: usize) -> f64 {
-    let mut sum = 0.0;
+pub fn softmax(x: &[f64]) -> Vec<f64> {
+    let mut vec : Vec<f64> = Vec::new();
 
-    for xj in x.iter() {
-        sum += xj.exp();
+    for xi in x.iter() {
+        let mut sum = 0.0;
+
+        for xj in x.iter() {
+            sum += xj.exp();
+        }
+
+        vec.push(xi.exp() / sum);
     }
 
-    x[i].exp() / sum
+    vec
 }
 
 

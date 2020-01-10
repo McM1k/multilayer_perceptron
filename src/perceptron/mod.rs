@@ -1,2 +1,3 @@
-mod perceptron;
-mod activation_functions;
+pub mod perceptron;
+pub mod activation_functions;
+pub mod layered;
