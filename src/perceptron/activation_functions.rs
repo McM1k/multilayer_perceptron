@@ -1,5 +1,6 @@
 use std::vec::Vec;
 
+#[derive(Clone, Copy)]
 pub enum ActivationNames{
     Sigmoid,
     HyperboloidTangent,
@@ -8,10 +9,18 @@ pub enum ActivationNames{
 
 impl ActivationNames {
     pub fn get_fn(&self) -> fn(&f64)->f64 {
-        match *activation {
+        match *self {
             ActivationNames::Sigmoid => sigmoid,
             ActivationNames::HyperboloidTangent => tanh,
             ActivationNames::RectifiedLinearUnit => relu,
+        }
+    }
+
+    pub fn get_deriv(&self) -> fn(&f64)->f64 {
+        match *self {
+            ActivationNames::Sigmoid => sigmoid_deriv,
+            ActivationNames::HyperboloidTangent => tanh_deriv,
+            ActivationNames::RectifiedLinearUnit => relu_deriv,
         }
     }
 }
@@ -20,8 +29,19 @@ pub fn sigmoid(z: &f64) -> f64 {
     1.0 / (1.0 + (-z).exp())
 }
 
+pub fn sigmoid_deriv(z: &f64) -> f64 {
+    let sigz = sigmoid(z);
+    sigz * (1.0 - sigz)
+}
+
 pub fn tanh(z: &f64) -> f64 {
     (z.exp() - (-z).exp()) / (z.exp() + (-z).exp())
+}
+
+pub fn tanh_deriv(z: &f64) -> f64 {
+    let coshz = (z.exp() + (-z).exp()) / 2.0;
+    let sinhz = (z.exp() - (-z).exp()) / 2.0;
+    ((coshz * coshz) - (sinhz * sinhz)) / (coshz * coshz)
 }
 
 pub fn relu(z: &f64) -> f64 {
@@ -30,6 +50,15 @@ pub fn relu(z: &f64) -> f64 {
     }
     else {
         *z
+    }
+}
+
+pub fn relu_deriv(z: &f64) -> f64 {
+    if *z <= 0.0 {
+        0.0
+    }
+    else {
+        1.0
     }
 }
 
@@ -124,7 +153,7 @@ mod activation_functions_tests {
         fn unit_vec() {
             let x = vec![42.0];
 
-            assert_eq!(softmax(&x, 0), 1.0);
+            assert_eq!(softmax(&x), [1.0]);
         }
     }
 }

@@ -1,16 +1,17 @@
 use super::activation_functions::*;
 use std::vec::Vec;
 use rand::rngs::SmallRng;
+use rand::Rng;
 
 
-
+#[derive(Clone)]
 pub struct Perceptron {
     bias: f64,
     weights: Vec<f64>,
 }
 
 impl Perceptron {
-    pub fn new(inputs_number: usize, rng: &SmallRng) -> Perceptron {
+    pub fn new(inputs_number: usize, rng: &mut SmallRng) -> Perceptron {
         let mut weights = Vec::new();
 
         for i in 0..inputs_number {

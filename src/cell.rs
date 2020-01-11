@@ -9,7 +9,7 @@ pub enum Status {
 
 #[derive(Deserialize, Debug)]
 pub struct Cell {
-    id: i32,
-    status: Status,
-    values: Vec<f64>,
+    pub id: i32,
+    pub status: Status,
+    pub values: Vec<f64>,
 }

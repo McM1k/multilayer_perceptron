@@ -9,8 +9,9 @@ use rand::rngs::SmallRng;
 use rand::SeedableRng;
 use std::vec::Vec;
 use perceptron::perceptron::Perceptron;
-use perceptron::perceptron::ActivationNames;
+use perceptron::activation_functions::ActivationNames;
 use cell::Cell;
+use perceptron::layered::Layered_network;
 
 fn main() {
     let data = reader::get_raw_data("resources/data.csv")
@@ -20,13 +21,10 @@ fn main() {
     println!("{:?}", rng.gen::<f64>());
 }
 
-fn epocher(data: &[Cell], network: &mut[Vec<Perceptron>]) {
-    for cell in *data {
+fn epocher(data: &[Cell], network: &mut Layered_network) {
+    for cell in data {
         let mut inputs = cell.values.clone();
-
-        for layer in network {
-            inputs = get_layer_result(&inputs, &layer);
-        }
+        let outputs = network.compute(&inputs);
 
 
     }
