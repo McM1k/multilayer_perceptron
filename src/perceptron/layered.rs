@@ -38,6 +38,10 @@ impl Layer {
 
         vec
     }
+
+    fn get_layer_error(y: &[Vec<f64>], t: &[Vec<f64>]) -> Vec<f64> {
+
+    }
 }
 
 impl Layered_network {
@@ -45,9 +49,9 @@ impl Layered_network {
         let mut net = Vec::new();
         let mut input_nb = representation[0];
 
-        for (rep, i) in representation.iter().enumerate() {
-            net.push(Layer::new(input_nb, rep, rng, &activations[*i]));
-            input_nb = rep;
+        for (i, rep) in representation.iter().enumerate() {
+            net.push(Layer::new(input_nb, *rep, rng, &activations[i]));
+            input_nb = *rep;
         }
 
         Layered_network {
@@ -57,7 +61,8 @@ impl Layered_network {
 
     pub fn output(&self, inputs: &[f64]) -> Vec<f64> {
         let outputs = self.compute(inputs);
-        outputs[outputs.len() - 1]
+        let len = outputs.len();
+        outputs[len - 1].clone()
     }
 
     pub fn compute(&self,inputs: &[f64]) -> Vec<Vec<f64>> {
@@ -72,9 +77,18 @@ impl Layered_network {
         outputs
     }
 
-    pub fn backpropagation(&mut self, out_vec: &[Vec<Vec<f64>>], truth: &[Vec<f64>]) {
-        for i in out_vec.len() {
-            for
+    fn batch_backpropagate(&mut self, inputs: &[Vec<f64>], truth: &[Vec<f64>], idx: usize) {
+        let outputs = self.layers[layer_idx].compute(inputs);
+        if idx + 1 == self.layers.len() {
+
         }
+        else {
+
+        }
+
+    }
+
+    pub fn batch_backpropagation(&mut self, out_vec: &[Vec<Vec<f64>>], truth: &[Vec<f64>]) {
+
     }
 }
