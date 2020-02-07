@@ -41,4 +41,13 @@ impl Perceptron {
         let sum = self.weighted_sum(inputs);
         (activation.get_fn())(&sum)
     }
+
+    pub fn error(&self, guesses: &[f64], truths: &[f64]) -> f64 {
+        let mut sum = 0.0;
+        for i in 0..truths.len() {
+            sum += (guess - *truths) * guess;
+        }
+//noeuds au cerveau https://fr.wikipedia.org/wiki/R%C3%A9tropropagation_du_gradient
+        sum / truths.len() as f64
+    }
 }
