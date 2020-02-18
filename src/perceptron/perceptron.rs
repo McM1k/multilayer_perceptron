@@ -6,8 +6,8 @@ use rand::Rng;
 
 #[derive(Clone)]
 pub struct Perceptron {
-    bias: f64,
-    weights: Vec<f64>,
+    pub bias: f64,
+    pub weights: Vec<f64>,
 }
 
 impl Perceptron {
@@ -27,7 +27,7 @@ impl Perceptron {
         perceptron
     }
 
-    fn weighted_sum(&self, inputs: &[f64]) -> f64 {
+    pub fn weighted_sum(&self, inputs: &[f64]) -> f64 {
         let mut sum = self.bias;
 
         for i in 0..self.weights.len() {
@@ -42,12 +42,8 @@ impl Perceptron {
         (activation.get_fn())(&sum)
     }
 
-    pub fn error(&self, guesses: &[f64], truths: &[f64]) -> f64 {
-        let mut sum = 0.0;
-        for i in 0..truths.len() {
-            sum += (guess - *truths) * guess;
-        }
-//noeuds au cerveau https://fr.wikipedia.org/wiki/R%C3%A9tropropagation_du_gradient
-        sum / truths.len() as f64
+    pub fn error(&self, inputs: &[f64], truth: f64, activation: &ActivationNames) -> f64 {
+        let sum = self.weighted_sum(inputs);
+        (activation.get_deriv())(&sum) * (compute(inputs, activation) - truth)
     }
 }

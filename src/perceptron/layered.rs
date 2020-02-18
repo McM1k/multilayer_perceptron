@@ -39,25 +39,18 @@ impl Layer {
         vec
     }
 
-//    pub fn batch_compute(&self, inputs: &[Vec<f64>]) -> Vec<f64> {
-//        let mut nb_outputs = self.perceptrons.len();
-//        let mut vec = vec![0.0; nb_outputs];
-//        for elem in inputs {
-//            let tmp = self.compute(elem);
-//            for i in 0..nb_outputs {
-//                vec[i] = vec[i] + tmp[i];
-//            }
-//        }
-//        for i in 0..nb_outputs {
-//            vec[i] = vec[i] / inputs.len() as f64;
-//        }
-//
-//        vec
-//    }
-//
-//    fn get_layer_error(y: &[Vec<f64>], t: &[Vec<f64>]) -> Vec<f64> {
-//
-//    }
+    pub fn backpropagate(&self, inputs: &[f64], n_err: &[f64], n_layer: Layer) -> Vec<f64> {
+        let mut vec = Vec::new();
+        for j in 0..self.perceptrons.len() {
+            let mut sum = 0.0;
+            for i in 0..n_err.len() {
+                sum += n_err[i] * n_layer.perceptrons[i].weights[j];
+            }
+            vec.push(self.activation.get_deriv()(&self.perceptrons[j].weighted_sum(inputs)) * (sum));
+        }
+
+        vec
+    }
 
 }
 
@@ -76,7 +69,7 @@ impl Layered_network {
         }
     }
 
-    pub fn output(&self, inputs: &[f64]) -> Vec<f64> {
+    pub fn result(&self, inputs: &[f64]) -> Vec<f64> {
         let outputs = self.compute(inputs);
         let len = outputs.len();
         outputs[len - 1].clone()
@@ -94,17 +87,32 @@ impl Layered_network {
         outputs
     }
 
-    fn get_errors(&self, inputs: &[f64], truth: &[f64], layer: usize) -> Vec<Vec<f64>> {
-        let outputs = self.layers[layer].compute(inputs);
-        if layer + 1 == self.layers.len() {
-            for perceptron in self.layers[layer].perceptrons {
-
-            }
-        }
-        else {
-
+    fn get_input_map(&self, inputs: &[f64]) -> Vec<Vec<f64>> {
+        let mut vec = Vec::new();
+        vec.push(inputs.into_vec());
+        for layer in self.layers {
+            let out = layer.compute(inputs);
+            vec.push(out.clone());
         }
 
+        vec
+    }
+
+    fn get_error_map(&self, inputs: &[f64], truth: &[f64]) -> Vec<Vec<f64>> {
+        let outputs = self.compute(inputs);
+        let mut errors = Vec::new();
+        let last_layer = self.layers[self.layers.len() - 1].clone();
+        let mut exit = Vec::new()
+        let input_map = self.get_input_map(inputs);
+        for i in 0..last_layer.perceptrons.len() {
+            exit.push(last_layer.perceptrons[i].error(inputs, truth[i], &last_layer.activation));
+        }
+        errors.push(exit);
+        for l in (self.layers.len() - 2)..=0 {
+            errors.insert(0, self.layers[l].backpropagate((input_map[l]).as_slice(), errors[0].as_slice(), self.layers[l + 1].clone()));
+        }
+
+        errors
     }
 
     pub fn backpropagation(&mut self, inputs: &[Vec<f64>], truth: &[Vec<f64>]) {
