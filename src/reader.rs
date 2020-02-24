@@ -1,8 +1,8 @@
-use csv::ReaderBuilder;
 use super::cell::Cell;
-use std::vec::Vec;
+use csv::ReaderBuilder;
 use std::result::Result;
 use std::result::Result::*;
+use std::vec::Vec;
 
 pub fn get_raw_data(path: &str) -> Result<Vec<Cell>, &str> {
     let mut raw_data: Vec<Cell> = Vec::new();

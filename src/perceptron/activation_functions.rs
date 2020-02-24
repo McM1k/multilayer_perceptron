@@ -1,23 +1,23 @@
 use std::vec::Vec;
 
 #[derive(Clone, Copy)]
-pub enum ActivationNames{
+pub enum ActivationNames {
     Sigmoid,
     HyperboloidTangent,
     RectifiedLinearUnit,
 }
 
 impl ActivationNames {
-    pub fn get_fn(&self) -> fn(&f64)->f64 {
-        match *self {
+    pub fn get_fn(self) -> fn(f64) -> f64 {
+        match self {
             ActivationNames::Sigmoid => sigmoid,
             ActivationNames::HyperboloidTangent => tanh,
             ActivationNames::RectifiedLinearUnit => relu,
         }
     }
 
-    pub fn get_deriv(&self) -> fn(&f64)->f64 {
-        match *self {
+    pub fn get_deriv(self) -> fn(f64) -> f64 {
+        match self {
             ActivationNames::Sigmoid => sigmoid_deriv,
             ActivationNames::HyperboloidTangent => tanh_deriv,
             ActivationNames::RectifiedLinearUnit => relu_deriv,
@@ -25,45 +25,43 @@ impl ActivationNames {
     }
 }
 
-pub fn sigmoid(z: &f64) -> f64 {
+pub fn sigmoid(z: f64) -> f64 {
     1.0 / (1.0 + (-z).exp())
 }
 
-pub fn sigmoid_deriv(z: &f64) -> f64 {
+pub fn sigmoid_deriv(z: f64) -> f64 {
     let sigz = sigmoid(z);
     sigz * (1.0 - sigz)
 }
 
-pub fn tanh(z: &f64) -> f64 {
+pub fn tanh(z: f64) -> f64 {
     (z.exp() - (-z).exp()) / (z.exp() + (-z).exp())
 }
 
-pub fn tanh_deriv(z: &f64) -> f64 {
+pub fn tanh_deriv(z: f64) -> f64 {
     let coshz = (z.exp() + (-z).exp()) / 2.0;
     let sinhz = (z.exp() - (-z).exp()) / 2.0;
     ((coshz * coshz) - (sinhz * sinhz)) / (coshz * coshz)
 }
 
-pub fn relu(z: &f64) -> f64 {
-    if *z <= 0.0 {
+pub fn relu(z: f64) -> f64 {
+    if z <= 0.0 {
         0.0
-    }
-    else {
-        *z
+    } else {
+        z
     }
 }
 
-pub fn relu_deriv(z: &f64) -> f64 {
-    if *z <= 0.0 {
+pub fn relu_deriv(z: f64) -> f64 {
+    if z <= 0.0 {
         0.0
-    }
-    else {
+    } else {
         1.0
     }
 }
 
 pub fn softmax(x: &[f64]) -> Vec<f64> {
-    let mut vec : Vec<f64> = Vec::new();
+    let mut vec: Vec<f64> = Vec::new();
 
     for xi in x.iter() {
         let mut sum = 0.0;
@@ -77,8 +75,6 @@ pub fn softmax(x: &[f64]) -> Vec<f64> {
 
     vec
 }
-
-
 
 #[cfg(test)]
 mod activation_functions_tests {

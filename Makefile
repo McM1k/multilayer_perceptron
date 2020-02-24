@@ -17,3 +17,6 @@ re: fclean all
 norm:
 	cargo clippy
 	cargo fmt
+
+test:
+	cargo test
